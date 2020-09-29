@@ -1,0 +1,39 @@
+generator client {
+  provider      = "prisma-client-js"
+  binaryTargets = ["native", "linux-musl"]
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model employee_childrens {
+  id         Int     @default(autoincrement()) @id
+  employeeId Int
+  name       String
+  age        Int
+  genderId   Int
+  genders    genders @relation(fields: [genderId], references: [id])
+
+  @@index([genderId], name: "FK_employee_childrens_genderId")
+}
+
+model employees {
+  id         Int      @default(autoincrement()) @id
+  name       String
+  age        Int
+  birthdate  DateTime
+  genderId   Int
+  fav_number Int?
+  genders    genders  @relation(fields: [genderId], references: [id])
+
+  @@index([genderId], name: "FK_employees_genderId")
+}
+
+model genders {
+  id                 Int                  @default(autoincrement()) @id
+  name               String
+  employee_childrens employee_childrens[]
+  employees          employees[]
+}
